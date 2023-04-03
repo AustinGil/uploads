@@ -45,10 +45,6 @@ onMounted(() => {
     <form action="/api" method="post" enctype="multipart/form-data">
       <label for="file">File</label>
       <input id="file" name="file1" type="file" />
-      <label for="file2">File</label>
-      <input id="file2" name="file2" type="file" />
-      <label for="text">File</label>
-      <input id="text" name="text" value="texty" />
       <br /><br />
       <button>Upload</button>
     </form>
@@ -59,6 +55,7 @@ onMounted(() => {
 * {
   box-sizing: border-box;
 }
+
 main {
   max-inline-size: 48rem;
   margin-inline: auto;
@@ -66,14 +63,21 @@ main {
   padding: 0.75rem;
   background: #fff;
 }
+
 h1 {
   margin-block-start: 0;
 }
+
 input {
   inline-size: 100%;
   border: 0.125rem solid;
   border-radius: 0.25rem;
   line-height: 1;
   padding: 0.25rem;
+}
+
+img {
+  display: block;
+  margin: 1rem auto 0;
 }
 </style>
