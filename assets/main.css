@@ -27,7 +27,7 @@ input[type="checkbox"] {
   appearance: none;
   inline-size: 1em;
   block-size: 1em;
-  margin: 0;
+  margin: 0 .5em 0 0;
   border: .125rem solid;
   border-radius: .125em;
   vertical-align: middle;
