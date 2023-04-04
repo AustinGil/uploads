@@ -26,7 +26,6 @@ function handleSubmit(event) {
 
 const data = reactive({
   isLoading: undefined,
-  isCdn: false,
 });
 
 onMounted(() => {
@@ -47,25 +46,15 @@ onMounted(() => {
       <label for="file">File</label>
       <input id="file" name="file1" type="file" />
       <br /><br />
-        <button>
-          {{ data.isLoading ? 'Uploading' : 'Upload' }}
-        </button>
-      </form>
+      <button>{{ data.isLoading ? 'Uploading' : 'Upload' }}</button>
+    </form>
 
-      <br />
-      <input id="cdn" v-model="data.isCdn" type="checkbox" />
-      <label for="cdn">Enable CDN</label>
-
-      <template v-if="data.isLoading != null && !data.isLoading">
-        <img
-          :src="
-            data.isCdn
-              ? 'https://uploader.austingil.com/files/nugget.jpg'
-              : 'https://npm.us-southeast-1.linodeobjects.com/files/nugget.jpg'
-          "
-          alt="My dog, Nugget making a really big yawn."
-        />
-      </template>
+    <img
+      v-if="data.isLoading != null && !data.isLoading"
+      src="https://npm.us-southeast-1.linodeobjects.com/files/nugget.jpg"
+      alt="My dog, Nugget making a really big yawn."
+    />
+    <!-- <img src="https://uploader.austingil.com/files/nugget.jpg" alt="" /> -->
   </main>
 </template>
 
