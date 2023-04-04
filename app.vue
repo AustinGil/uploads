@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from 'vue';
+import { reactive, onMounted } from 'vue';
 
 /** @param {Event} event */
 function handleSubmit(event) {
@@ -19,23 +19,24 @@ function handleSubmit(event) {
   } else {
     url.search = searchParams;
   }
-  fetch(url, fetchOptions);
+  const request = fetch(url, fetchOptions);
   event.preventDefault();
+  return request;
 }
+
+const data = reactive({
+  isLoading: undefined,
+  isCdn: false,
+});
 
 onMounted(() => {
   const form = document.querySelector('form');
   if (!form) return;
-  form.addEventListener('submit', handleSubmit);
-
-  /** @type {NodeListOf<HTMLInputElement>} */
-  const inputs = document.querySelectorAll('input[type="file"]');
-  for (const input of inputs) {
-    const file = new File([`content for ${input.name}`], `${input.name}.txt`);
-    const container = new DataTransfer();
-    container.items.add(file);
-    input.files = container.files;
-  }
+  form.addEventListener('submit', async (event) => {
+    data.isLoading = true;
+    await handleSubmit(event);
+    data.isLoading = false;
+  });
 });
 </script>
 
@@ -46,8 +47,25 @@ onMounted(() => {
       <label for="file">File</label>
       <input id="file" name="file1" type="file" />
       <br /><br />
-      <button>Upload</button>
-    </form>
+        <button>
+          {{ data.isLoading ? 'Uploading' : 'Upload' }}
+        </button>
+      </form>
+
+      <br />
+      <input id="cdn" v-model="data.isCdn" type="checkbox" />
+      <label for="cdn">Enable CDN</label>
+
+      <template v-if="data.isLoading != null && !data.isLoading">
+        <img
+          :src="
+            data.isCdn
+              ? 'https://uploader.austingil.com/files/nugget.jpg'
+              : 'https://npm.us-southeast-1.linodeobjects.com/files/nugget.jpg'
+          "
+          alt="My dog, Nugget making a really big yawn."
+        />
+      </template>
   </main>
 </template>
 
