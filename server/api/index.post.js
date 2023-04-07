@@ -2,6 +2,7 @@ import { PassThrough } from 'stream';
 import formidable from 'formidable';
 import { S3Client } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
+import { clamscan } from '../utils.js';
 
 const { S3_URL, S3_ACCESS_KEY, S3_SECRET_KEY, S3_REGION } = process.env;
 const s3Client = new S3Client({
@@ -49,7 +50,7 @@ function parseMultipartNodeRequest(req) {
         params: {
           Bucket: 'austins-bucket',
           Key: `files/${file.originalFilename}`,
-          ContentType: file.mimetype,
+          ContentType: file.mimetype ?? undefined,
           ACL: 'public-read',
           Body: body,
         },
@@ -62,7 +63,20 @@ function parseMultipartNodeRequest(req) {
     }
     const form = formidable({
       multiples: true,
-      fileWriteStreamHandler: fileWriteStreamHandler,
+      uploadDir: './uploads',
+      // fileWriteStreamHandler: fileWriteStreamHandler,
+      filter({ mimetype, originalFilename }) {
+        originalFilename = originalFilename ?? '';
+        // Enforce file ends with allowed extension
+        const imageRegex = /\.(jpe?g|png|gif|avif|webp|svg|txt)$/i;
+        if (!imageRegex.test(originalFilename)) {
+          return false;
+        }
+        // Enforce file uses allowed mimetype
+        return Boolean(
+          mimetype && (mimetype.includes('image') || mimetype === 'text/plain')
+        );
+      },
     });
     form.parse(req, (error, fields, files) => {
       if (error) {
@@ -71,6 +85,22 @@ function parseMultipartNodeRequest(req) {
       }
       Promise.all(s3Uploads)
         .then(() => {
+          const filePaths = [];
+          for (const key in files) {
+            if (!Object.hasOwn(files, key)) continue;
+            const file = files[key];
+            if (Array.isArray(file)) {
+              filePaths.concat(file.map((f) => f.filepath));
+            } else {
+              filePaths.push(file.filepath);
+            }
+          }
+          return clamscan(filePaths);
+        })
+        .then((infectedCount) => {
+          if (infectedCount > 0) {
+            reject('Infected files');
+          }
           resolve({ ...fields, ...files });
         })
         .catch(reject);

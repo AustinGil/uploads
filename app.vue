@@ -44,16 +44,16 @@ onMounted(() => {
     <h1>Upload a file</h1>
     <form action="/api" method="post" enctype="multipart/form-data">
       <label for="file">File</label>
-      <input id="file" name="file1" type="file" />
+      <input id="file" name="file1" type="file" accept="image/*, text/plain" />
       <br /><br />
       <button>{{ data.isLoading ? 'Uploading' : 'Upload' }}</button>
     </form>
 
-    <img
+    <!-- <img
       v-if="data.isLoading != null && !data.isLoading"
-      src="https://npm.us-southeast-1.linodeobjects.com/files/nugget.jpg"
+      src="https://austins-bucket.us-southeast-1.linodeobjects.com/files/nugget.jpg"
       alt="My dog, Nugget making a really big yawn."
-    />
+    /> -->
     <!-- <img src="https://uploader.austingil.com/files/nugget.jpg" alt="" /> -->
   </main>
 </template>
