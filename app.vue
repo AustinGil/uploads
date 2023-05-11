@@ -44,7 +44,7 @@ onMounted(() => {
     <h1>Upload a file</h1>
     <form action="/api" method="post" enctype="multipart/form-data">
       <label for="file">File</label>
-      <input id="file" name="file1" type="file" accept="image/*, text/plain" />
+      <input id="file" name="file1" type="file" accept="image/*, text/plain" multiple />
       <br /><br />
       <button>{{ data.isLoading ? 'Uploading' : 'Upload' }}</button>
     </form>
