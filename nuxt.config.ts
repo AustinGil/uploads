@@ -5,6 +5,12 @@ export default defineNuxtConfig({
       htmlAttrs: {
         // class: 'no-js',
       },
+      // link: [
+      //   {
+      //     rel: 'stylesheet',
+      //     href: "https://raw.githack.com/AustinGil/utils/master/css/theme.css"
+      //   }
+      // ],
       script: [
         // {
         //   innerHTML: `

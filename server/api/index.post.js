@@ -64,18 +64,18 @@ function parseMultipartNodeRequest(req) {
     const form = formidable({
       multiples: true,
       uploadDir: './uploads',
-      // fileWriteStreamHandler: fileWriteStreamHandler,
-      filter({ mimetype, originalFilename }) {
-        originalFilename = originalFilename ?? '';
+      maxFileSize: 1024 * 1024 * 10,
+      fileWriteStreamHandler: fileWriteStreamHandler,
+      filter(file) {
+        const originalFilename = file.originalFilename ?? '';
         // Enforce file ends with allowed extension
-        const imageRegex = /\.(jpe?g|png|gif|avif|webp|svg|txt)$/i;
+        const imageRegex = /\.(jpe?g|png|gif|avif|webp|svg)$/i;
         if (!imageRegex.test(originalFilename)) {
           return false;
         }
+        const mimetype = file.mimetype;
         // Enforce file uses allowed mimetype
-        return Boolean(
-          mimetype && (mimetype.includes('image') || mimetype === 'text/plain')
-        );
+        return Boolean(mimetype && mimetype.includes('image'));
       },
     });
     form.parse(req, (error, fields, files) => {
